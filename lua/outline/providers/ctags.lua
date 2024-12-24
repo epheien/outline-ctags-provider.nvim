@@ -4,12 +4,14 @@ local kinds_index = require('outline.symbols').str_to_kind
 local config = {
   -- 全局通用映射
   program = 'ctags',
+  scope_sep = '.',
   kinds = {
     prototype = 'Function',
   },
   -- key: language or ctags
   filetypes = {
     ['c++'] = {
+      scope_sep = '::',
       kinds = {
         member = 'Field',
         alias = 'TypeAlias',
@@ -35,12 +37,11 @@ local function capitalize(str)
     return (str:sub(1,1):upper() .. str:sub(2))
 end
 
-local function ctags_kind_to_outline_kind(tag)
-  local kind = tag.kind
+local function ctags_kind_to_outline_kind(kind, language)
   local fallback = 'Fragment'
   if not kind then return kinds_index[fallback] end
 
-  local filetypes = config.filetypes[string.lower(tag.language)] or {}
+  local filetypes = config.filetypes[string.lower(language)] or {}
   local kinds = filetypes.kinds or {}
   -- filetypes['c++'].kinds
   local outline_kind = kinds[kind]
@@ -52,12 +53,53 @@ local function ctags_kind_to_outline_kind(tag)
   return kinds_index[outline_kind] or kinds_index[fallback]
 end
 
+local function scope_tree(tree, tag, range)
+  local node = nil
+  local children = tree
+  for i, scope in ipairs(tag.scopes) do
+    --local parent = node
+    node = nil
+    for _, child in ipairs(children) do
+      if child.name == scope then
+        node = child
+      end
+    end
+    if not node then
+      local kind = i == #tag.scopes and tag.scopeKind or 'struct'
+      node = {
+        name = scope,
+        kind = ctags_kind_to_outline_kind(kind, tag.language),
+        range = range,
+        selectionRange = range,
+        children = {}
+      }
+      table.insert(children, node)
+    end
+    children = node.children
+  end
+  return node
+end
+
+-- a::b::c => {'a', 'b', 'c'}
+-- TODO: 优化性能
+local function split_scope(scope, language)
+  local filetype = config.filetypes[string.lower(language)]
+  local sep = filetype and filetype.scope_sep or config.scope_sep
+  return vim.split(scope, sep, { plain = true, trimempty = true })
+end
+
 -- {"_type": "tag", "name": "MyStruct", "path": "/Users/eph/a.cpp", "pattern": "/^struct MyStruct {$/", "file": true, "kind": "struct"}
 local function convert_symbols(text)
   local symbols = {}
-  local structs = {}
+  local tags = {}
   for line in vim.gsplit(text, "\n", { plain = true, trimempty = true }) do
     local tag = vim.json.decode(line)
+    table.insert(tags, tag)
+  end
+  table.sort(tags, function(t1, t2)
+    return t1.line < t2.line
+  end)
+  for _, tag in ipairs(tags) do
     local range = {
       -- line 和 character(column) 从 0 开始
       start = { line = tag.line - 1, character = 0 },
@@ -67,24 +109,23 @@ local function convert_symbols(text)
 
     local symbol = {
       name = tag.name,
-      kind = ctags_kind_to_outline_kind(tag),
+      kind = ctags_kind_to_outline_kind(tag.kind, tag.language),
       range = range,
       selectionRange = range,
       children = {},
+      detail = tag.signature and tag.signature or nil,
+      --info = tag,
     }
-    if tag.kind == 'struct' or tag.kind == 'class' then
-      structs[tag.name] = symbol
-    end
-    if tag.signature then
-      symbol.detail = tag.signature
-    end
-    if tag.scope and structs[tag.scope] then
-      --print(vim.inspect(symbols))
-      table.insert(structs[tag.scope].children, symbol)
+
+    if tag.scope then
+      tag.scopes = split_scope(tag.scope, tag.language)
+      local node = scope_tree(symbols, tag, symbol.range)
+      table.insert(node.children, symbol)
     else
       table.insert(symbols, symbol)
     end
   end
+  --vim.fn.writefile(vim.split(vim.json.encode(symbols), '\n'), 'xxx.json')
   return symbols
 end
 
