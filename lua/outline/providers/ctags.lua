@@ -101,7 +101,7 @@ function M.request_symbols(on_symbols, opts)
   vim.system({
     config.program,
     '--output-format=json',
-    '--fields=+neaZS{language}',
+    '--fields=*',
     vim.fn.expand('%:p'),
   }, { text = true }, on_exit)
 end
