@@ -75,6 +75,9 @@ local function convert_symbols(text)
     if tag.kind == 'struct' then
       structs[tag.name] = symbol
     end
+    if tag.signature then
+      symbol.detail = tag.signature
+    end
     if tag.scope and structs[tag.scope] then
       --print(vim.inspect(symbols))
       table.insert(structs[tag.scope].children, symbol)
@@ -98,7 +101,7 @@ function M.request_symbols(on_symbols, opts)
   vim.system({
     config.program,
     '--output-format=json',
-    '--fields=+neaZ{language}',
+    '--fields=+neaZS{language}',
     vim.fn.expand('%:p'),
   }, { text = true }, on_exit)
 end
