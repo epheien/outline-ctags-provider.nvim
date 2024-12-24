@@ -93,7 +93,7 @@ local function find_node_by_scopes(symbols, tag, range)
   return node
 end
 
--- {"_type": "tag", "name": "MyStruct", "path": "/Users/eph/a.cpp", "pattern": "/^struct MyStruct {$/", "file": true, "kind": "struct"}
+-- ctags --output-format=json "--fields=*" {file}
 local function convert_symbols(text)
   local symbols = {}
   local tags = {}
