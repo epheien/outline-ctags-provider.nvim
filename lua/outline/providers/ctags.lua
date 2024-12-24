@@ -9,7 +9,7 @@ local config = {
     prototype = 'Function',
     member = 'Field',
   },
-  -- key: language or ctags
+  -- key: language of ctags
   filetypes = {
     ['c++'] = {
       scope_sep = '::',
