@@ -45,7 +45,7 @@ function M.supports_buffer(bufnr, conf)
 end
 
 local function capitalize(str)
-    return (str:sub(1,1):upper() .. str:sub(2))
+  return (str:sub(1,1):upper() .. str:sub(2))
 end
 
 local function ctags_kind_to_outline_kind(kind, language)
