@@ -93,14 +93,6 @@ local function find_node_by_scopes(symbols, tag, range)
   return node
 end
 
--- a::b::c => {'a', 'b', 'c'}
--- TODO: 优化性能
-local function split_scope(scope, language)
-  local filetype = config.filetypes[string.lower(language)]
-  local sep = filetype and filetype.scope_sep or config.scope_sep
-  return vim.split(scope, sep, { plain = true, trimempty = true })
-end
-
 -- {"_type": "tag", "name": "MyStruct", "path": "/Users/eph/a.cpp", "pattern": "/^struct MyStruct {$/", "file": true, "kind": "struct"}
 local function convert_symbols(text)
   local symbols = {}
@@ -147,7 +139,6 @@ local function convert_symbols(text)
     symbol.detail = #details > 0 and vim.fn.join(details, ' ') or nil
 
     if tag.scope then
-      --tag.scopes = split_scope(tag.scope, tag.language)
       tag.scopes = vim.split(tag.scope, ft_cfg.scope_sep or config.scope_sep, { plain = true, trimempty = true })
       local node = find_node_by_scopes(symbols, tag, symbol.range)
       table.insert(node.children, symbol)
