@@ -2,7 +2,6 @@ local cfg = require('outline.config')
 local kinds_index = require('outline.symbols').str_to_kind
 
 local config = {
-  -- 全局通用映射
   program = 'ctags',
   scope_sep = '.',
   kinds = {
