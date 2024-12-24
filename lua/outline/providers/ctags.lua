@@ -53,9 +53,10 @@ local function ctags_kind_to_outline_kind(kind, language)
   return kinds_index[outline_kind] or kinds_index[fallback]
 end
 
-local function scope_tree(tree, tag, range)
+-- tag.scopes 作为 path 从 symbols 里面寻找/生成指定的 node
+local function find_node_by_scopes(symbols, tag, range)
   local node = nil
-  local children = tree
+  local children = symbols
   for i, scope in ipairs(tag.scopes) do
     --local parent = node
     node = nil
@@ -119,7 +120,7 @@ local function convert_symbols(text)
 
     if tag.scope then
       tag.scopes = split_scope(tag.scope, tag.language)
-      local node = scope_tree(symbols, tag, symbol.range)
+      local node = find_node_by_scopes(symbols, tag, symbol.range)
       table.insert(node.children, symbol)
     else
       table.insert(symbols, symbol)
