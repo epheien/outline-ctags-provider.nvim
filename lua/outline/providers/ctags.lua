@@ -27,8 +27,7 @@ local M = {
   name = 'ctags',
 }
 
-function M.supports_buffer(bufnr, config)
-  --return #vim.lsp.get_clients({ bufnr = bufnr }) == 0
+function M.supports_buffer(bufnr, conf)
   return true
 end
 
