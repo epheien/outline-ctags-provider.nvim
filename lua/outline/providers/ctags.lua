@@ -126,9 +126,10 @@ local function convert_symbols(text)
       range = range,
       selectionRange = range,
       children = {},
-      detail = tag.signature and tag.signature or nil,
       --info = tag,
     }
+    if tag.typeref then symbol.detail = string.gsub(tag.typeref, 'typename:', '', 1) end
+    if tag.signature then symbol.detail = tag.signature end
 
     if tag.scope then
       tag.scopes = split_scope(tag.scope, tag.language)
