@@ -28,7 +28,7 @@ local M = {
 }
 
 function M.supports_buffer(bufnr, conf)
-  return true
+  return vim.api.nvim_buf_get_name(bufnr) ~= ''
 end
 
 local function capitalize(str)
