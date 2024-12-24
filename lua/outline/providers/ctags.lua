@@ -7,19 +7,30 @@ local config = {
   scope_sep = '.',
   kinds = {
     prototype = 'Function',
+    member = 'Field',
   },
   -- key: language or ctags
   filetypes = {
     ['c++'] = {
       scope_sep = '::',
       kinds = {
-        member = 'Field',
         alias = 'TypeAlias',
         ['local'] = 'Variable',
         typedef = 'TypeAlias',
         enumerator = 'Enum',
       },
-    }
+    },
+    go = {
+      kinds = {
+        func = 'Function',
+        talias = 'TypeAlias',
+        methodSpec = 'Function',
+        var = 'Variable',
+        const = 'Constant',
+        type = 'TypeParameter',
+        packageName = 'Module',
+      },
+    },
   }
 }
 
