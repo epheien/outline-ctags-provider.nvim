@@ -20,6 +20,7 @@ local config = {
       },
     },
     go = {
+      detail_reverse = true,
       kinds = {
         func = 'Function',
         talias = 'TypeAlias',
@@ -104,10 +105,12 @@ end
 local function convert_symbols(text)
   local symbols = {}
   local tags = {}
+  local ft_cfg = {}
   for line in vim.gsplit(text, "\n", { plain = true, trimempty = true }) do
     local tag = vim.json.decode(line)
     table.insert(tags, tag)
   end
+  ft_cfg = #tags > 0 and config.filetypes[string.lower(tags[1].language)] or {}
   table.sort(tags, function(t1, t2)
     return t1.line < t2.line
   end)
@@ -127,11 +130,25 @@ local function convert_symbols(text)
       children = {},
       --info = tag,
     }
-    if tag.typeref then symbol.detail = string.gsub(tag.typeref, 'typename:', '', 1) end
-    if tag.signature then symbol.detail = tag.signature end
+
+    -- detail: '{type} {signature}' or reverse
+    local details = {}
+    if tag.typeref then
+      local type = string.gsub(tag.typeref, 'typename:', '', 1)
+      table.insert(details, type)
+    end
+    if tag.signature then
+      if ft_cfg.detail_reverse then
+        table.insert(details, 1, tag.signature)
+      else
+        table.insert(details, tag.signature)
+      end
+    end
+    symbol.detail = #details > 0 and vim.fn.join(details, ' ') or nil
 
     if tag.scope then
-      tag.scopes = split_scope(tag.scope, tag.language)
+      --tag.scopes = split_scope(tag.scope, tag.language)
+      tag.scopes = vim.split(tag.scope, ft_cfg.scope_sep or config.scope_sep, { plain = true, trimempty = true })
       local node = find_node_by_scopes(symbols, tag, symbol.range)
       table.insert(node.children, symbol)
     else
