@@ -149,7 +149,7 @@ function M.request_symbols(on_symbols, opts)
         print(string.format("ctags occur error %d: %s"), obj.code, obj.stderr)
         return
       end
-      on_symbols(convert_symbols(obj.stdout))
+      on_symbols(convert_symbols(obj.stdout), opts)
     end)
   end
   vim.system({
