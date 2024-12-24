@@ -1,4 +1,4 @@
-# A outline.nvim external provider for universal ctags
+# An outline.nvim external provider for universal ctags
 
 A Lazy.nvim example to use this provider.
 
