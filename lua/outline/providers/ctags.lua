@@ -72,7 +72,7 @@ local function convert_symbols(text)
       selectionRange = range,
       children = {},
     }
-    if tag.kind == 'struct' then
+    if tag.kind == 'struct' or tag.kind == 'class' then
       structs[tag.name] = symbol
     end
     if tag.signature then
