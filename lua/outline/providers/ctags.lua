@@ -72,7 +72,8 @@ local function find_node_by_scopes(symbols, tag, range)
         kind = ctags_kind_to_outline_kind(kind, tag.language),
         range = range,
         selectionRange = range,
-        children = {}
+        children = {},
+        dummy = true, -- 标识作为 scope 添加
       }
       table.insert(children, node)
     end
