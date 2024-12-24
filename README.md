@@ -30,7 +30,12 @@ A Lazy.nvim example to use this provider.
       prototype = 'Function',
       member = 'Field',
     },
-    -- key: language of ctags
+    -- Key is language of ctags with lowercase -- you can run
+    -- `ctags --list-languages` to get all languages.
+    -- Value is kind mapping from kind of ctags to kind of outline.nvim.
+    -- The kind of ctags can be listed to run `ctags --list-kinds-full[=(language)]`,
+    -- eg. `ctags --list-kinds-full=c++`
+    -- The kind of outline.nvim listed in document of outline.nvim.
     filetypes = {
       ['c++'] = {
         scope_sep = '::',
