@@ -41,7 +41,7 @@ local function ctags_kind_to_outline_kind(tag)
   if not kind then return kinds_index[fallback] end
 
   local filetypes = config.filetypes[string.lower(tag.language)] or {}
-  kinds = filetypes.kinds or {}
+  local kinds = filetypes.kinds or {}
   -- filetypes['c++'].kinds
   local outline_kind = kinds[kind]
   -- kinds
