@@ -27,6 +27,7 @@ A Lazy.nvim example to use this provider.
     providers = {
       priority = { 'lsp', 'ctags', 'coc', 'markdown', 'norg' },
       ctags = {
+        program = 'ctags',
         -- Global kind mapping fron kind of ctags to kind of outline.nvim.
         -- See below for more detail.
         kinds = {

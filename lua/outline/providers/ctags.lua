@@ -3,6 +3,7 @@ local kinds_index = require('outline.symbols').str_to_kind
 
 local config = {
   -- 全局通用映射
+  program = 'ctags',
   kinds = {
     prototype = 'Function',
   },
@@ -96,7 +97,7 @@ function M.request_symbols(on_symbols, opts)
     end)
   end
   vim.system({
-    'ctags',
+    config.program,
     '--output-format=json',
     '--fields=+neaZ{language}',
     vim.fn.expand('%:p'),
