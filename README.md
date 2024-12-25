@@ -9,6 +9,15 @@ A Lazy.nvim example to use this provider.
       require('outline').setup({
         providers = {
           priority = { 'lsp', 'coc', 'markdown', 'norg', 'ctags' },
+          -- ctags provider options
+          ctags = {
+            program = 'ctags',
+            filetypes = {
+              ['c++'] = {
+                -- ...
+              },
+            },
+          },
         },
       })
     end,
