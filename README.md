@@ -25,7 +25,7 @@ A Lazy.nvim example to use this provider.
     dependencies = {
       'epheien/outline-ctags-provider.nvim'
     }
-  },
+  }
 ```
 
 ## Configuration
