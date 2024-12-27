@@ -40,8 +40,8 @@ local M = {
   name = 'ctags',
 }
 
-function M.supports_buffer(bufnr, conf)
-  return vim.api.nvim_buf_get_name(bufnr) ~= ''
+function M.supports_buffer(bufnr, conf) ---@diagnostic disable-line
+  return vim.api.nvim_buf_get_name(bufnr) ~= '' and vim.bo[bufnr].filetype ~= 'help'
 end
 
 local function capitalize(str)
