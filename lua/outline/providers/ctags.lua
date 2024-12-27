@@ -120,6 +120,7 @@ local function convert_symbols(text)
       range = range,
       selectionRange = range,
       children = {},
+      access = tag.access
       --info = tag,
     }
 
