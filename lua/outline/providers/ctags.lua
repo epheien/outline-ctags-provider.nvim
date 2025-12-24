@@ -45,7 +45,7 @@ function M.supports_buffer(bufnr, conf) ---@diagnostic disable-line
 end
 
 local function capitalize(str)
-  return (str:sub(1,1):upper() .. str:sub(2))
+  return (str:sub(1, 1):upper() .. str:sub(2))
 end
 
 local function ctags_kind_to_outline_kind(kind, language)
@@ -155,7 +155,7 @@ function M.request_symbols(on_symbols, opts)
   local on_exit = function(obj)
     vim.schedule(function()
       if (obj.code ~= 0) then
-        print(string.format("ctags occur error %d: %s"), obj.code, obj.stderr)
+        print(string.format("ctags occur error %d: %s", obj.code, obj.stderr))
         return
       end
       on_symbols(convert_symbols(obj.stdout), opts)
