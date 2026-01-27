@@ -139,7 +139,7 @@ local function convert_symbols(text)
     end
     symbol.detail = #details > 0 and vim.fn.join(details, ' ') or nil
 
-    if tag.scope then
+    if tag.scope and tag.scope ~= "" then
       tag.scopes = vim.split(tag.scope, ft_cfg.scope_sep or config.scope_sep, { plain = true, trimempty = true })
       local node = find_node_by_scopes(symbols, tag, symbol.range)
       table.insert(node.children, symbol)
